@@ -19,3 +19,6 @@ coverage/
 logs/
 tmp/
 temp/
+
+
+appsettings.Development.json
