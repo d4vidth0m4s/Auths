@@ -10,6 +10,8 @@ namespace Auths.Application.IoC
         {
             services.AddScoped<ILoginServices, LoginServices>();
             services.AddScoped <IJwtService, JwtService>();
+            services.AddScoped<IGoogleAuthService, GoogleAuthsService>();
+            services.AddScoped<IUsuarioServices, UsuarioServices>();
             return services;
         }
     }

@@ -18,6 +18,7 @@ namespace Auths.Infrastructure.IoC
                     configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IloginRepository, LoginRepository>();
+            services.AddScoped<IUsuariosRepository, UsuariosRepository>();
 
             return services;
         }
