@@ -5,14 +5,13 @@ namespace Auths.Extensions
 {
     public static class HeaderInjectionExtensions
     {
-        public static IApplicationBuilder UseHeaderInjection(this IApplicationBuilder app)
+        public static IApplicationBuilder UseHeaderInjection(this IApplicationBuilder app, string internalSecret)
         {
+            if (string.IsNullOrWhiteSpace(internalSecret))
+                throw new InvalidOperationException("InternalSecret no configurado");
+
             return app.Use(async (context, next) =>
             {
-                var config = context.RequestServices.GetRequiredService<IConfiguration>();
-                var expectedSecret = config["expectedSecret"]
-                                     ?? throw new InvalidOperationException("InternalSecret no configurado");
-
                 if (!context.Request.Headers.TryGetValue("X-Internal-Secret", out var receivedSecret))
                 {
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -22,7 +21,7 @@ namespace Auths.Extensions
 
                 if (!CryptographicOperations.FixedTimeEquals(
                         Encoding.UTF8.GetBytes(receivedSecret.ToString()),
-                        Encoding.UTF8.GetBytes(expectedSecret)))
+                        Encoding.UTF8.GetBytes(internalSecret)))
                 {
                     context.Response.StatusCode = StatusCodes.Status403Forbidden;
                     await context.Response.WriteAsJsonAsync(new { error = "Secreto inválido" });
