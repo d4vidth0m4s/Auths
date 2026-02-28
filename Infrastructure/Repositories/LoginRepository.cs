@@ -25,10 +25,13 @@ namespace Auths.Infrastructure.Repositories
             var user = await ObtenerPorUsernameAsync(username);
 
             if (user == null)
-                return false;
+                throw new UnauthorizedAccessException("Usuario o contraseña incorrectos");
 
             // ⚠ Aquí deberías validar hash real (BCrypt por ejemplo)
-            return user.PasswordHash == password;
+            if (user.PasswordHash != password)
+                throw new UnauthorizedAccessException("Usuario o contraseña incorrectos");
+
+            return true;
         }
     }
 }
