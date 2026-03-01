@@ -25,5 +25,6 @@ temp/
 TestResults/
 coverage/
 
-# Local/dev-only settings
+# ASP.NET local configuration
+Properties/launchSettings.json
 appsettings.Development.json
