@@ -21,4 +21,6 @@ tmp/
 temp/
 
 
+# ASP.NET local configuration
+Properties/launchSettings.json
 appsettings.Development.json
