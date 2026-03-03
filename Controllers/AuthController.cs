@@ -2,6 +2,7 @@ using Auths.Application.DTOs.AuthsGoogle.Request;
 using Auths.Application.DTOs.CodigoAcceso.Request;
 using Auths.Application.DTOs.Login.Resquest;
 using Auths.Application.Interfaz;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auths.Controllers
@@ -13,6 +14,8 @@ namespace Auths.Controllers
         private readonly ILoginServices _loginService;
         private readonly IGoogleAuthService _googleAuthService;
         private readonly ICodigoAccesoServices _codigoAccesoServices;
+
+
 
         public AuthController(
             ILoginServices loginService,
@@ -46,6 +49,7 @@ namespace Auths.Controllers
         }
 
         [HttpPost("google")]
+        [AllowAnonymous]
         public async Task<IActionResult> Google([FromBody] GoogleAuthsRequestDto request)
         {
             try
@@ -63,11 +67,13 @@ namespace Auths.Controllers
         }
 
         [HttpPost("generar-codigo-acceso")]
+        [Authorize]
         public async Task<IActionResult> GenerarCodigoAcceso([FromBody] GenerarCodigoAccesoRequestDto request)
         {
             try
             {
-                var result = await _codigoAccesoServices.GenerarCodigoAsync(request);
+                var username = Request.GetUsername();
+                var result = await _codigoAccesoServices.GenerarCodigoAsync(request, username);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -80,6 +86,7 @@ namespace Auths.Controllers
         }
 
         [HttpPost("canjear-codigo-acceso")]
+        [AllowAnonymous]
         public async Task<IActionResult> CanjearCodigoAcceso([FromBody] CanjearCodigoAccesoRequestDto request)
         {
             try
@@ -97,6 +104,7 @@ namespace Auths.Controllers
         }
 
         [HttpGet("ok")]
+        [AllowAnonymous]
         public IActionResult Health()
         {
             return Ok(new
@@ -105,5 +113,17 @@ namespace Auths.Controllers
                 status = "OK"
             });
         }
+
+
+
     }
+
+    public static class HttpRequestExtensions
+    {
+        public static string GetUsername(this HttpRequest request)
+        {
+            return request.Headers["X-User-Id"].ToString();
+        }
+    }
+
 }

@@ -6,7 +6,7 @@ namespace Auths.Application.Interfaz
 {
     public interface ICodigoAccesoServices
     {
-        Task<GenerarCodigoAccesoResponseDto> GenerarCodigoAsync(GenerarCodigoAccesoRequestDto dto);
+        Task<GenerarCodigoAccesoResponseDto> GenerarCodigoAsync(GenerarCodigoAccesoRequestDto dto,string username);
         Task<LoginResponseDto> CanjearCodigoAsync(CanjearCodigoAccesoRequestDto dto);
     }
 }

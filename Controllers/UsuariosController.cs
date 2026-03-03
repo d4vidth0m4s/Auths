@@ -1,5 +1,6 @@
 using Auths.Application.DTOs.CrearUsuario;
 using Auths.Application.Interfaz;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auths.Controllers
@@ -16,6 +17,7 @@ namespace Auths.Controllers
         }
 
         [HttpPost("CrearUsuario")]
+        [AllowAnonymous]
         public async Task<ActionResult<long>> Create([FromBody] CrearUsuarioRequestDto dto)
         {
             try
@@ -33,6 +35,7 @@ namespace Auths.Controllers
         }
 
         [HttpPut("ActualizarUsuario/{id:long}")]
+        [Authorize]
         public async Task<ActionResult> Update([FromRoute] long id, [FromBody] CrearUsuarioRequestDto dto)
         {
             try

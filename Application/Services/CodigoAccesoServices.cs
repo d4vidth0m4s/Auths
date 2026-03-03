@@ -22,12 +22,12 @@ namespace Auths.Application.Services
             _jwtService = jwtService;
         }
 
-        public async Task<GenerarCodigoAccesoResponseDto> GenerarCodigoAsync(GenerarCodigoAccesoRequestDto dto)
+        public async Task<GenerarCodigoAccesoResponseDto> GenerarCodigoAsync(GenerarCodigoAccesoRequestDto dto, string username)
         {
-            if (string.IsNullOrWhiteSpace(dto.IdentificadorUsuario))
+            if (string.IsNullOrWhiteSpace(username))
                 throw new UnauthorizedAccessException("El identificador del usuario es requerido.");
 
-            var usuario = await _codigoAccesoRepository.ObtenerUsuarioPorIdentificadorAsync(dto.IdentificadorUsuario);
+            var usuario = await _codigoAccesoRepository.ObtenerUsuarioPorIdentificadorAsync(username);
             if (usuario == null)
                 throw new UnauthorizedAccessException("Usuario no encontrado.");
 
