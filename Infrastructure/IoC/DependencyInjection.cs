@@ -18,15 +18,17 @@ namespace Auths.Infrastructure.IoC
                 options.UseNpgsql(
                     configuration.GetConnectionString("DefaultConnection")));
 
-            var redisConnection = configuration.GetConnectionString("Redis");
-            if (string.IsNullOrWhiteSpace(redisConnection))
-                redisConnection = "localhost:6379";
+            //      var redisConnection = configuration.GetConnectionString("Redis") ?? "localhost:6379";
 
-            services.AddSingleton<IConnectionMultiplexer>(_ =>
+            var redisConnection = configuration.GetConnectionString("Redis") ?? "localhost:6379";
+
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
-                var redisOptions = ConfigurationOptions.Parse(redisConnection);
-                redisOptions.AbortOnConnectFail = false;
-                return ConnectionMultiplexer.Connect(redisOptions);
+                var options = ConfigurationOptions.Parse(redisConnection);
+                options.AbortOnConnectFail = false;
+                options.ConnectTimeout = 10000;
+                options.SyncTimeout = 10000;
+                return ConnectionMultiplexer.Connect(options);
             });
 
             services.AddScoped<IloginRepository, LoginRepository>();
