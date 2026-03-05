@@ -3,6 +3,7 @@ using Auths.Application.Configuration;
 using Auths.Application.IoC;
 using Auths.Infrastructure.IoC;
 using Comercios.Grpc;
+using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -39,7 +40,9 @@ builder.Services.AddGrpcClient<ComerciosService.ComerciosServiceClient>(options 
 {
     var comerciosUrl = builder.Configuration["Grpc:ComerciosUrl"] ?? "https://localhost:5002";
     options.Address = new Uri(comerciosUrl);
-});
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+    new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
 
 builder.Services.AddServices();
 builder.Services.AddInfrastructure(builder.Configuration);
