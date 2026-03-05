@@ -23,7 +23,7 @@ namespace Auths.Application.Services
             _expirationMinutes = int.Parse(configuration["Jwt:ExpirationMinutes"] ?? "60");
         }
 
-        public string CrearToken(Usuario usuario, int? comercio_Id = null)
+        public string CrearToken(Usuario usuario, bool tieneComercio = false)
         {
             var expiration = DateTimeOffset.UtcNow
                 .AddMinutes(_expirationMinutes)
@@ -31,7 +31,7 @@ namespace Auths.Application.Services
 
             var roles = new List<string> { "user" };
 
-            if (comercio_Id != null)
+            if (tieneComercio)
                 roles.Add("userComercio");
 
             var token = JwtBuilder.Create()

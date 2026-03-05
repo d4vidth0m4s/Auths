@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option csharp_namespace = "Comercios.Grpc";
+
+package comercios;
+
+service ComerciosService {
+  rpc ObtenerComercioPorUsuario (ObtenerComercioPorUsuarioRequest) returns (ObtenerComercioPorUsuarioResponse);
+}
+
+message ObtenerComercioPorUsuarioRequest {
+  string usuario_id = 1;
+}
+
+message ObtenerComercioPorUsuarioResponse {
+  bool encontrado = 1;
+  string comercio_id = 2;
+  string nombre = 3;
+  string descripcion = 4;
+  bool abierto = 5;
+  double calificacion = 6;
+  repeated string categorias = 7;
+  string img_banner_url = 8;
+  string direccion = 9;
+  string ciudad = 10;
+  string telefono = 11;
+}

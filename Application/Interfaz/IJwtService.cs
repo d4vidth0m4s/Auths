@@ -4,6 +4,6 @@ namespace Auths.Application.Interfaz
 {
     public interface IJwtService
     {
-        string CrearToken(Usuario usuario, int? comercio_id=null);
+        string CrearToken(Usuario usuario, bool tieneComercio = false);
     }
 }

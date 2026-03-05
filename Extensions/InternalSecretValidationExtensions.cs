@@ -1,12 +1,18 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
+using Auths.Application.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Auths.Extensions
 {
-    public static class HeaderInjectionExtensions
+    public static class InternalSecretValidationExtensions
     {
-        public static IApplicationBuilder UseHeaderInjection(this IApplicationBuilder app, string internalSecret)
+        public static IApplicationBuilder UseInternalSecretValidation(this IApplicationBuilder app)
         {
+            var internalSecret = app.ApplicationServices
+                .GetRequiredService<IOptions<InternalSecurityOptions>>()
+                .Value.InternalSecret;
+
             if (string.IsNullOrWhiteSpace(internalSecret))
                 throw new InvalidOperationException("InternalSecret no configurado");
 
@@ -24,12 +30,17 @@ namespace Auths.Extensions
                         Encoding.UTF8.GetBytes(internalSecret)))
                 {
                     context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                    await context.Response.WriteAsJsonAsync(new { error = "Secreto inválido" });
+                    await context.Response.WriteAsJsonAsync(new { error = "Secreto invalido" });
                     return;
                 }
 
                 await next();
             });
+        }
+
+        public static IApplicationBuilder UseHeaderInjection(this IApplicationBuilder app)
+        {
+            return app.UseInternalSecretValidation();
         }
     }
 }
